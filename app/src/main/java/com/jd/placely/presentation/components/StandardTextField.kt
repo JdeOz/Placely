@@ -3,6 +3,7 @@ package com.jd.placely.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import com.jd.placely.R
+import com.jd.placely.presentation.ui.theme.IconSizeMedium
 import com.jd.placely.presentation.util.TestTags
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,7 +81,7 @@ fun StandardTextField(
                         imageVector = leadingIcon,
                         contentDescription = null,
 //                        tint = MaterialTheme.colors.onBackground,
-//                        modifier = Modifier.size(IconSizeMedium)
+                        modifier = Modifier.size(IconSizeMedium)
                     )
                 }
                 icon

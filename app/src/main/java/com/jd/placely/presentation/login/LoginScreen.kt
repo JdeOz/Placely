@@ -1,13 +1,7 @@
 package com.jd.placely.presentation.login
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +24,7 @@ import com.jd.placely.presentation.util.Screen
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel:LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
     Box(
         modifier = Modifier
@@ -42,78 +36,96 @@ fun LoginScreen(
                 bottom = 50.dp
             )
     ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.Center),
-        ) {
-            Text(
-                text = stringResource(id = R.string.login),
+        Login(Modifier, viewModel, navController)
+        Feed(Modifier.align(Alignment.BottomCenter), viewModel, navController)
+    }
+}
+
+
+@Composable
+fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavController) {
+    Column(verticalArrangement = Arrangement.Center, modifier = modifier.fillMaxSize()) {
+        HeaderText()
+        Spacer(modifier = Modifier.height(SpaceMedium))
+        EmailField(viewModel)
+        Spacer(modifier = Modifier.height(SpaceMedium))
+        PasswordField(viewModel)
+        Spacer(modifier = Modifier.height(SpaceMedium))
+        LoginButton(Modifier.align(Alignment.End), viewModel, navController)
+    }
+}
+
+@Composable
+fun HeaderText() {
+    Text(
+        text = stringResource(id = R.string.login),
 //                style = MaterialTheme.typography.h1
+    )
+}
+
+@Composable
+fun EmailField(viewModel: LoginViewModel) {
+    StandardTextField(
+        text = viewModel.usernameText.value,
+        onValueChange = { viewModel.setUsernameText(it) },
+        keyboardType = KeyboardType.Email,
+        error = viewModel.usernameError.value,
+        hint = stringResource(id = R.string.login_hint)
+    )
+}
+
+@Composable
+fun PasswordField(viewModel: LoginViewModel) {
+    StandardTextField(
+        text = viewModel.passwordText.value,
+        onValueChange = { viewModel.setPasswordText(it) },
+        hint = stringResource(id = R.string.password_hint),
+        keyboardType = KeyboardType.Password,
+        error = viewModel.passwordError.value,
+        isPasswordVisible = viewModel.showPassword.value,
+        onPasswordToggleClick = { viewModel.setShowPassword(it) }
+    )
+}
+
+@Composable
+fun LoginButton(modifier: Modifier, viewModel: LoginViewModel, navController: NavController) {
+    Button(
+        onClick = {
+            navController.navigate(
+                Screen.MainFeedScreen.route
             )
-            Spacer(modifier = Modifier.height(SpaceMedium))
-            StandardTextField(
-                text = viewModel.usernameText.value,
-                onValueChange = {
-                    viewModel.setUsernameText(it)
-                },
-                keyboardType = KeyboardType.Email,
-                error = viewModel.usernameError.value,
-                hint = stringResource(id = R.string.login_hint)
-            )
-            Spacer(modifier = Modifier.height(SpaceMedium))
-            StandardTextField(
-                text = viewModel.passwordText.value,
-                onValueChange = {
-                    viewModel.setPasswordText(it)
-                },
-                hint = stringResource(id = R.string.password_hint),
-                keyboardType = KeyboardType.Password,
-                error = viewModel.passwordError.value,
-                isPasswordVisible = viewModel.showPassword.value,
-                onPasswordToggleClick = {
-                    viewModel.setShowPassword(it)
-                }
-            )
-            Spacer(modifier = Modifier.height(SpaceMedium))
-            Button(
-                onClick = {
-                    navController.navigate(
-                        Screen.MainFeedScreen.route
-                    )
-                },
-                modifier = Modifier
-                    .align(Alignment.End)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login),
-//                    color = MaterialTheme.colors.onPrimary
-                )
-            }
-        }
+        },
+        modifier = modifier
+    ) {
         Text(
-            text = buildAnnotatedString {
-                append(stringResource(id = R.string.dont_have_an_account_yet))
-                append(" ")
-                val signUpText = stringResource(id = R.string.sign_up)
-                withStyle(
-                    style = SpanStyle(
-//                        color = MaterialTheme.colors.primary
-                    color = Color.White
-                    )
-                ) {
-                    append(signUpText)
-                }
-            },
-//            style = MaterialTheme.typography.body1,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .clickable {
-                    navController.navigate(
-                        Screen.RegisterScreen.route
-                    )
-                }
+            text = stringResource(id = R.string.login),
+//                    color = MaterialTheme.colors.onPrimary
         )
     }
+}
+
+@Composable
+fun Feed(modifier: Modifier, viewModel: LoginViewModel, navController: NavController) {
+    Text(
+        text = buildAnnotatedString {
+            append(stringResource(id = R.string.dont_have_an_account_yet))
+            append(" ")
+            val signUpText = stringResource(id = R.string.sign_up)
+            withStyle(
+                style = SpanStyle(
+//                        color = MaterialTheme.colors.primary
+                    color = Color.White
+                )
+            ) {
+                append(signUpText)
+            }
+        },
+//            style = MaterialTheme.typography.body1,
+        modifier = modifier
+            .clickable {
+                navController.navigate(
+                    Screen.RegisterScreen.route
+                )
+            }
+    )
 }
