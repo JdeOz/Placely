@@ -1,4 +1,4 @@
-package com.jd.placely.presentation.login
+package com.jd.placely.presentation.register
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+
 @HiltViewModel
-class LoginViewModel @Inject constructor(): ViewModel() {
+class RegisterViewModel @Inject constructor(): ViewModel() {
     private val _emailText = mutableStateOf("")
     val emailText: State<String> = _emailText
+
+    private val _usernameText = mutableStateOf("")
+    val usernameText: State<String> = _usernameText
 
     private val _passwordText = mutableStateOf("")
     val passwordText: State<String> = _passwordText
@@ -25,6 +29,10 @@ class LoginViewModel @Inject constructor(): ViewModel() {
 
     fun setEmailText(username: String) {
         _emailText.value = username
+    }
+
+    fun setUsernameText(username: String) {
+        _usernameText.value = username
     }
 
     fun setPasswordText(password: String) {

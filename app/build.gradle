@@ -64,8 +64,19 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     implementation 'androidx.compose.material:material-icons-extended:1.4.3'
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
+    implementation "androidx.compose.runtime:runtime-livedata:1.4.3"
 
+    implementation 'com.google.maps.android:maps-compose:2.11.2'
 
+    // Make sure to also include the latest version of the Maps SDK for Android
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
+    // Optionally, you can include the Compose utils library for Clustering, etc.
+    implementation 'com.google.maps.android:maps-compose-utils:2.11.2'
+
+    // Optionally, you can include the widgets library for ScaleBar, etc.
+    implementation 'com.google.maps.android:maps-compose-widgets:2.11.2'
 
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:2.45"

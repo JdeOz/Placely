@@ -5,6 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jd.placely.presentation.login.LoginScreen
+import com.jd.placely.presentation.main_feed.MainFeedScreen
+import com.jd.placely.presentation.map.MapScreen
 import com.jd.placely.presentation.register.RegisterScreen
 import com.jd.placely.presentation.splash.SplashScreen
 
@@ -23,6 +25,12 @@ fun Navigation() {
         }
         composable(Screen.RegisterScreen.route){
             RegisterScreen(navController = navController)
+        }
+        composable(Screen.MainFeedScreen.route){
+            MainFeedScreen(navController = navController)
+        }
+        composable(Screen.MapScreen.route){
+            MapScreen(navController = navController)
         }
     }
 }

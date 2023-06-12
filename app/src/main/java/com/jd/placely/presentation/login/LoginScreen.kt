@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -32,10 +32,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.jd.placely.presentation.components.StandardTextField
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.jd.placely.presentation.ui.theme.*
 import com.jd.placely.R
-import com.jd.placely.presentation.register.RegisterViewModel
 import com.jd.placely.presentation.util.Screen
 
 @Composable
@@ -43,6 +42,15 @@ fun LoginScreen(
     navController: NavController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(color = MaterialTheme.colorScheme.background)
+    Image(
+        painter = painterResource(id = R.drawable.circles),
+        contentDescription = null,
+        modifier = Modifier.fillMaxWidth(),
+        contentScale = ContentScale.Crop
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -53,42 +61,42 @@ fun LoginScreen(
                 bottom = 50.dp
             )
     ) {
-        Login(Modifier, viewModel, navController)
-        Feed(Modifier.align(Alignment.BottomCenter), navController)
+        Login(viewModel, navController)
+        LoginFeed(Modifier.align(Alignment.BottomCenter), navController)
     }
 }
 
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavController) {
-    Column(verticalArrangement = Arrangement.Center, modifier = modifier.fillMaxSize()) {
-        Header()
+fun Login(viewModel: LoginViewModel, navController: NavController) {
+    Column(verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
+        LoginHeader()
         Spacer(modifier = Modifier.height(SpaceMedium))
-        EmailField(viewModel)
+        LoginEmailField(viewModel)
         Spacer(modifier = Modifier.height(SpaceMedium))
-        PasswordField(viewModel)
+        LoginPasswordField(viewModel)
         Spacer(modifier = Modifier.height(SpaceMedium))
-        LoginButton(Modifier.align(Alignment.End), navController)
+        LoginButton(Modifier.align(Alignment.CenterHorizontally), navController)
     }
 }
 
 @Composable
-fun Header() {
+fun LoginHeader() {
     Image(
         painter = painterResource(id = R.drawable.placely_logo),
         contentDescription = "Logo",
-        modifier = Modifier.scale(0.5f)
+        modifier = Modifier.scale(0.5f) //TODO:Hacer responsive
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailField(viewModel: LoginViewModel) {
+fun LoginEmailField(viewModel: LoginViewModel) {
     OutlinedTextField(
-        value = viewModel.usernameText.value,
-        onValueChange = { viewModel.setUsernameText(it) },
-        label = { Text("Email address") },
-        placeholder = { Text("Enter your email") },
+        value = viewModel.emailText.value,
+        onValueChange = { viewModel.setEmailText(it) },
+        label = { Text("Email") },
+        placeholder = { Text("Ingrese su Email") },
         modifier = Modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Email
@@ -96,18 +104,17 @@ fun EmailField(viewModel: LoginViewModel) {
         singleLine = true,
         maxLines = 1,
         shape = RoundedCornerShape(24.dp)
-
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordField(viewModel: LoginViewModel) {
+fun LoginPasswordField(viewModel: LoginViewModel) {
     OutlinedTextField(
         value = viewModel.passwordText.value,
         onValueChange = { viewModel.setPasswordText(it) },
-        label = { Text("Password") },
-        placeholder = { Text("Enter your email") },
+        label = { Text("Contraseña") },
+        placeholder = { Text("Ingrese su contraseña") },
         visualTransformation = if (viewModel.showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             IconButton(onClick = { viewModel.setShowPassword(!viewModel.showPassword.value) }) {
@@ -132,21 +139,19 @@ fun PasswordField(viewModel: LoginViewModel) {
 fun LoginButton(modifier: Modifier, navController: NavController) {
     Button(
         onClick = {
-            navController.navigate(
-                Screen.MainFeedScreen.route
-            )
+            navController.popBackStack()
+            navController.navigate(Screen.MainFeedScreen.route)
         },
         modifier = modifier
     ) {
         Text(
             text = stringResource(id = R.string.login),
-//                    color = MaterialTheme.colors.onPrimary
         )
     }
 }
 
 @Composable
-fun Feed(modifier: Modifier, navController: NavController) {
+fun LoginFeed(modifier: Modifier, navController: NavController) {
     Text(
         text = buildAnnotatedString {
             append(stringResource(id = R.string.dont_have_an_account_yet))
@@ -163,9 +168,8 @@ fun Feed(modifier: Modifier, navController: NavController) {
 //            style = MaterialTheme.typography.body1,
         modifier = modifier
             .clickable {
-                navController.navigate(
-                    Screen.RegisterScreen.route
-                )
+                navController.popBackStack()
+                navController.navigate(Screen.RegisterScreen.route)
             }
     )
 }

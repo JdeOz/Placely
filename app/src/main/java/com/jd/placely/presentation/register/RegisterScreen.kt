@@ -1,7 +1,9 @@
 package com.jd.placely.presentation.register
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -13,11 +15,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -32,6 +36,7 @@ import androidx.navigation.NavController
 import com.jd.placely.presentation.components.StandardTextField
 import com.jd.placely.presentation.ui.theme.*
 import com.jd.placely.R
+import com.jd.placely.presentation.register.RegisterViewModel
 import com.jd.placely.presentation.util.Screen
 
 @Composable
@@ -39,6 +44,12 @@ fun RegisterScreen(
     navController: NavController,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
+    Image(
+        painter = painterResource(id = R.drawable.circles),
+        contentDescription = null,
+        modifier = Modifier.fillMaxWidth(),
+        contentScale = ContentScale.Crop
+    )
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -49,70 +60,82 @@ fun RegisterScreen(
                 bottom = 50.dp
             )
     ) {
-        Login(Modifier, viewModel, navController)
-
-        Feed(Modifier.align(Alignment.BottomCenter), viewModel, navController)
+        Register(viewModel, navController)
+        RegisterFeed(Modifier.align(Alignment.BottomCenter), navController)
     }
 }
 
 
 @Composable
-fun Login(modifier: Modifier, viewModel: RegisterViewModel, navController: NavController) {
-    Column(verticalArrangement = Arrangement.Center, modifier = modifier.fillMaxSize()) {
-        HeaderText()
+fun Register(viewModel: RegisterViewModel, navController: NavController) {
+    Column(verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
+        RegisterHeader()
         Spacer(modifier = Modifier.height(SpaceMedium))
-        EmailTextField(viewModel)
+        RegisterEmailField(viewModel)
         Spacer(modifier = Modifier.height(SpaceMedium))
-        PasswordTextField(viewModel)
+        RegisterUsernameField(viewModel)
         Spacer(modifier = Modifier.height(SpaceMedium))
-        LoginButton(Modifier.align(Alignment.End), viewModel, navController)
+        RegisterPasswordField(viewModel)
+        Spacer(modifier = Modifier.height(SpaceMedium))
+        RegisterButton(Modifier.align(Alignment.CenterHorizontally), navController)
     }
 }
 
 @Composable
-fun HeaderText() {
-    Text(
-        text = stringResource(id = R.string.register),
-//                style = MaterialTheme.typography.h1
-    )
-}
-
-@Composable
-fun EmailField(viewModel: RegisterViewModel) {
-    StandardTextField(
-        text = viewModel.usernameText.value,
-        onValueChange = { viewModel.setUsernameText(it) },
-        keyboardType = KeyboardType.Email,
-        error = viewModel.usernameError.value,
-        hint = stringResource(id = R.string.login_hint)
+fun RegisterHeader() {
+    Image(
+        painter = painterResource(id = R.drawable.placely_logo),
+        contentDescription = "Logo",
+        modifier = Modifier.scale(0.5f) //TODO:Hacer responsive
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailTextField(viewModel: RegisterViewModel) {
+fun RegisterEmailField(viewModel: RegisterViewModel) {
     OutlinedTextField(
-        value = viewModel.usernameText.value,
-        onValueChange = { viewModel.setUsernameText(it) },
-        label = { Text("Email address") },
-        placeholder = { Text("Enter your email") },
+        value = viewModel.emailText.value,
+        onValueChange = { viewModel.setEmailText(it) },
+        label = { Text("Email") },
+        placeholder = { Text("Ingrese su Email") },
         modifier = Modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Email
         ),
         singleLine = true,
-        maxLines = 1
+        maxLines = 1,
+        shape = RoundedCornerShape(24.dp)
+
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordTextField(viewModel: RegisterViewModel) {
+fun RegisterUsernameField(viewModel: RegisterViewModel) {
+    OutlinedTextField(
+        value = viewModel.usernameText.value,
+        onValueChange = { viewModel.setUsernameText(it) },
+        label = { Text("Nombre completo") },
+        placeholder = { Text("Ingrese su nombre completo") },
+        modifier = Modifier.fillMaxWidth(),
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Text
+        ),
+        singleLine = true,
+        maxLines = 1,
+        shape = RoundedCornerShape(24.dp)
+
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RegisterPasswordField(viewModel: RegisterViewModel) {
     OutlinedTextField(
         value = viewModel.passwordText.value,
         onValueChange = { viewModel.setPasswordText(it) },
-        label = { Text("Password") },
-        placeholder = { Text("Enter your email") },
+        label = { Text("Contraseña") },
+        placeholder = { Text("Ingrese su contraseña") },
         visualTransformation = if (viewModel.showPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             IconButton(onClick = { viewModel.setShowPassword(!viewModel.showPassword.value) }) {
@@ -128,25 +151,13 @@ fun PasswordTextField(viewModel: RegisterViewModel) {
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done
         ),
-        modifier = Modifier.fillMaxWidth()
-        )
-}
-
-@Composable
-fun PasswordField(viewModel: RegisterViewModel) {
-    StandardTextField(
-        text = viewModel.passwordText.value,
-        onValueChange = { viewModel.setPasswordText(it) },
-        hint = stringResource(id = R.string.password_hint),
-        keyboardType = KeyboardType.Password,
-        error = viewModel.passwordError.value,
-        isPasswordVisible = viewModel.showPassword.value,
-        onPasswordToggleClick = { viewModel.setShowPassword(it) }
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp)
     )
 }
 
 @Composable
-fun LoginButton(modifier: Modifier, viewModel: RegisterViewModel, navController: NavController) {
+fun RegisterButton(modifier: Modifier, navController: NavController) {
     Button(
         onClick = {
             navController.navigate(
@@ -156,23 +167,22 @@ fun LoginButton(modifier: Modifier, viewModel: RegisterViewModel, navController:
         modifier = modifier
     ) {
         Text(
-            text = stringResource(id = R.string.login),
+            text = stringResource(id = R.string.register),
 //                    color = MaterialTheme.colors.onPrimary
         )
     }
 }
 
 @Composable
-fun Feed(modifier: Modifier, viewModel: RegisterViewModel, navController: NavController) {
+fun RegisterFeed(modifier: Modifier, navController: NavController) {
     Text(
         text = buildAnnotatedString {
-            append(stringResource(id = R.string.dont_have_an_account_yet))
+            append(stringResource(id = R.string.already_have_an_account))
             append(" ")
-            val signUpText = stringResource(id = R.string.sign_up)
+            val signUpText = stringResource(id = R.string.sign_in)
             withStyle(
                 style = SpanStyle(
-//                        color = MaterialTheme.colors.primary
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.secondary
                 )
             ) {
                 append(signUpText)
@@ -181,9 +191,8 @@ fun Feed(modifier: Modifier, viewModel: RegisterViewModel, navController: NavCon
 //            style = MaterialTheme.typography.body1,
         modifier = modifier
             .clickable {
-                navController.navigate(
-                    Screen.RegisterScreen.route
-                )
+                navController.popBackStack()
+                navController.navigate(Screen.LoginScreen.route)
             }
     )
 }
