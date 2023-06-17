@@ -1,4 +1,4 @@
-package com.jd.placely.data.repository
+package com.jd.placely.domain.repository
 
 import com.jd.placely.domain.model.Post
 

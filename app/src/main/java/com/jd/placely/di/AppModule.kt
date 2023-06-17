@@ -2,7 +2,7 @@ package com.jd.placely.di
 
 import com.jd.placely.data.datasource.LocalPostDataSource
 import com.jd.placely.data.datasource.PostDataSource
-import com.jd.placely.data.repository.PostRepository
+import com.jd.placely.domain.repository.PostRepository
 import com.jd.placely.data.repository.PostRepositoryImpl
 import dagger.Module
 import dagger.Provides

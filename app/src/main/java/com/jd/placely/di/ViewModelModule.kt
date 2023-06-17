@@ -1,6 +1,6 @@
 package com.jd.placely.di
 
-import com.jd.placely.data.repository.PostRepository
+import com.jd.placely.domain.repository.PostRepository
 import com.jd.placely.domain.use_case.GetPostsUseCase
 import com.jd.placely.presentation.main_feed.MainFeedViewModel
 import dagger.Module
