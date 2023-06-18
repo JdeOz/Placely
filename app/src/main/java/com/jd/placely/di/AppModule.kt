@@ -2,7 +2,7 @@ package com.jd.placely.di
 
 import com.jd.placely.data.datasource.LocalPostDataSource
 import com.jd.placely.data.datasource.PostDataSource
-import com.jd.placely.data.repository.FirebaseLoginRepository
+import com.jd.placely.data.repository.LoginRepositoryImpl
 import com.jd.placely.domain.repository.PostRepository
 import com.jd.placely.data.repository.PostRepositoryImpl
 import com.jd.placely.domain.repository.LoginRepository
@@ -24,7 +24,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideLoginRepository(): LoginRepository {
-        return FirebaseLoginRepository()
+        return LoginRepositoryImpl()
     }
 
     @Provides

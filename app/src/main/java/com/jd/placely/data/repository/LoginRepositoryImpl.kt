@@ -5,7 +5,7 @@ import com.google.firebase.ktx.Firebase
 import com.jd.placely.domain.repository.LoginRepository
 import kotlinx.coroutines.tasks.await
 
-class FirebaseLoginRepository() : LoginRepository {
+class LoginRepositoryImpl() : LoginRepository {
     private val auth = Firebase.auth
 
     override suspend fun login(email: String, password: String): Boolean {
