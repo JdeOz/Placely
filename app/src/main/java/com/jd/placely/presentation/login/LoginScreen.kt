@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -76,7 +78,9 @@ fun Login(viewModel: LoginViewModel, navController: NavController) {
         Spacer(modifier = Modifier.height(SpaceMedium))
         LoginPasswordField(viewModel)
         Spacer(modifier = Modifier.height(SpaceMedium))
-        LoginButton(Modifier.align(Alignment.CenterHorizontally), navController)
+        LoginButton(Modifier.align(Alignment.CenterHorizontally), viewModel, navController)
+        Spacer(modifier = Modifier.height(SpaceLarge))
+        LoginState(Modifier.align(Alignment.CenterHorizontally), viewModel)
     }
 }
 
@@ -103,13 +107,28 @@ fun LoginEmailField(viewModel: LoginViewModel) {
         ),
         singleLine = true,
         maxLines = 1,
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(24.dp),
+        isError = viewModel.emailError.value,
+        trailingIcon = {
+            if (viewModel.emailError.value) {
+                Icon(
+                    imageVector = Icons.Default.Error,
+                    contentDescription = "Error"
+                )
+            }
+        },
+        supportingText = {
+            if (viewModel.emailError.value) {
+                Text("Ingrese un email válido.")
+            }
+        }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPasswordField(viewModel: LoginViewModel) {
+
     OutlinedTextField(
         value = viewModel.passwordText.value,
         onValueChange = { viewModel.setPasswordText(it) },
@@ -124,29 +143,56 @@ fun LoginPasswordField(viewModel: LoginViewModel) {
                 )
             }
         },
-        isError = viewModel.passwordError.value.isNotEmpty(),
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done
         ),
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(24.dp),
+        isError = viewModel.passwordError.value,
+        supportingText = {
+            if (viewModel.passwordError.value) {
+                Text("Ingrese una contraseña valida.")
+            }
+        }
     )
 }
+//TODO:Arreglar: el teclado cubre el supportingText
 
 @Composable
-fun LoginButton(modifier: Modifier, navController: NavController) {
+fun LoginButton(modifier: Modifier, viewModel: LoginViewModel, navController: NavController) {
     Button(
         onClick = {
-            navController.popBackStack()
-            navController.navigate(Screen.MainFeedScreen.route)
+            viewModel.login(navController)
         },
-        modifier = modifier
+        modifier = modifier,
+        enabled = (!viewModel.emailError.value && !viewModel.passwordError.value && viewModel.emailText.value.isNotEmpty() && viewModel.passwordText.value.isNotEmpty())
     ) {
         Text(
             text = stringResource(id = R.string.login),
         )
+    }
+}
+
+@Composable
+fun LoginState(modifier: Modifier, viewModel: LoginViewModel) {
+    if (viewModel.isLoading.value) {
+        CircularProgressIndicator(modifier = modifier)
+    }
+    if (viewModel.loginError.value) {
+        Row(verticalAlignment = Alignment.CenterVertically,modifier = modifier) {
+            Icon(
+                imageVector = Icons.Default.Error,
+                contentDescription = "Error icon",
+                tint = MaterialTheme.colorScheme.error
+            )
+            Spacer(modifier = Modifier.width(SpaceSmall))
+            Text(
+                text = "Error al iniciar sesión.",
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
     }
 }
 
@@ -165,7 +211,7 @@ fun LoginFeed(modifier: Modifier, navController: NavController) {
                 append(signUpText)
             }
         },
-//            style = MaterialTheme.typography.body1,
+
         modifier = modifier
             .clickable {
                 navController.popBackStack()

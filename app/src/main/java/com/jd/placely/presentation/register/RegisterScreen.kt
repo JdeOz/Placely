@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -19,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,10 +33,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-//import com.jd.placely.presentation.components.StandardTextField
 import com.jd.placely.presentation.ui.theme.*
 import com.jd.placely.R
-import com.jd.placely.presentation.register.RegisterViewModel
 import com.jd.placely.presentation.util.Screen
 
 @Composable
@@ -77,7 +75,9 @@ fun Register(viewModel: RegisterViewModel, navController: NavController) {
         Spacer(modifier = Modifier.height(SpaceMedium))
         RegisterPasswordField(viewModel)
         Spacer(modifier = Modifier.height(SpaceMedium))
-        RegisterButton(Modifier.align(Alignment.CenterHorizontally), navController)
+        RegisterReplyPasswordField(viewModel)
+        Spacer(modifier = Modifier.height(SpaceMedium))
+        RegisterButton(Modifier.align(Alignment.CenterHorizontally), viewModel, navController)
     }
 }
 
@@ -104,8 +104,21 @@ fun RegisterEmailField(viewModel: RegisterViewModel) {
         ),
         singleLine = true,
         maxLines = 1,
-        shape = RoundedCornerShape(24.dp)
-
+        shape = RoundedCornerShape(24.dp),
+        isError = viewModel.emailError.value,
+        trailingIcon = {
+            if (viewModel.emailError.value) {
+                Icon(
+                    imageVector = Icons.Default.Error,
+                    contentDescription = "Error"
+                )
+            }
+        },
+        supportingText = {
+            if (viewModel.emailError.value) {
+                Text("Ingrese un email válido.")
+            }
+        }
     )
 }
 
@@ -123,7 +136,21 @@ fun RegisterUsernameField(viewModel: RegisterViewModel) {
         ),
         singleLine = true,
         maxLines = 1,
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(24.dp),
+        isError = viewModel.usernameError.value,
+        trailingIcon = {
+            if (viewModel.usernameError.value) {
+                Icon(
+                    imageVector = Icons.Default.Error,
+                    contentDescription = "Error"
+                )
+            }
+        },
+        supportingText = {
+            if (viewModel.usernameError.value) {
+                Text("Ingrese un nombre válido.")
+            }
+        }
 
     )
 }
@@ -145,30 +172,68 @@ fun RegisterPasswordField(viewModel: RegisterViewModel) {
                 )
             }
         },
-        isError = viewModel.passwordError.value.isNotEmpty(),
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done
         ),
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(24.dp),
+        isError = viewModel.passwordError.value,
+        supportingText = {
+            if (viewModel.passwordError.value) {
+                Text("Ingrese una contraseña valida.")
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RegisterReplyPasswordField(viewModel: RegisterViewModel) {
+    OutlinedTextField(
+        value = viewModel.replyPasswordText.value,
+        onValueChange = { viewModel.setReplyPasswordText(it) },
+        label = { Text("Confirmación Contraseña") },
+        placeholder = { Text("Vuelve a ingresar la contraseña") },
+        visualTransformation = if (viewModel.showReplyPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconButton(onClick = { viewModel.setShowReplyPassword(!viewModel.showReplyPassword.value) }) {
+                Icon(
+                    imageVector = if (viewModel.showReplyPassword.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                    contentDescription = if (viewModel.showReplyPassword.value) "Hide password" else "Show password"
+                )
+            }
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        isError = viewModel.replyPasswordError.value,
+        supportingText = {
+            if (viewModel.replyPasswordError.value) {
+                Text("Las contraseñas no coinsiden.")
+            }
+        }
     )
 }
 
 @Composable
-fun RegisterButton(modifier: Modifier, navController: NavController) {
+fun RegisterButton(modifier: Modifier, viewModel: RegisterViewModel, navController: NavController) {
     Button(
         onClick = {
             navController.navigate(
                 Screen.MainFeedScreen.route
             )
         },
-        modifier = modifier
+        modifier = modifier,
+        enabled = (!viewModel.emailError.value && !viewModel.usernameError.value && !viewModel.passwordError.value && !viewModel.replyPasswordError.value && viewModel.emailText.value.isNotEmpty() && viewModel.usernameText.value.isNotEmpty() && viewModel.passwordText.value.isNotEmpty() && viewModel.replyPasswordText.value.isNotEmpty())
     ) {
         Text(
-            text = stringResource(id = R.string.register),
-//                    color = MaterialTheme.colors.onPrimary
+            text = stringResource(id = R.string.register)
         )
     }
 }
@@ -188,7 +253,6 @@ fun RegisterFeed(modifier: Modifier, navController: NavController) {
                 append(signUpText)
             }
         },
-//            style = MaterialTheme.typography.body1,
         modifier = modifier
             .clickable {
                 navController.popBackStack()

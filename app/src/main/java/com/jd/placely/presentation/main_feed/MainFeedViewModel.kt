@@ -23,7 +23,7 @@ class MainFeedViewModel @Inject constructor(
 
     private fun loadPosts() {
         viewModelScope.launch {
-            val result = getPostsUseCase.getPosts()
+            val result = getPostsUseCase()
             if (result.isSuccess) {
                 _posts.value = result.getOrNull()
             } else {

@@ -1,7 +1,9 @@
 package com.jd.placely.di
 
+import com.jd.placely.domain.repository.LoginRepository
 import com.jd.placely.domain.repository.PostRepository
 import com.jd.placely.domain.use_case.GetPostsUseCase
+import com.jd.placely.domain.use_case.LoginUseCase
 import com.jd.placely.presentation.main_feed.MainFeedViewModel
 import dagger.Module
 import dagger.Provides
@@ -23,5 +25,10 @@ object ViewModelModule {
     @Provides
     fun provideGetPostsUseCase(repository: PostRepository): GetPostsUseCase {
         return GetPostsUseCase(repository)
+    }
+
+    @Provides
+    fun provideLoginUseCase(repository: LoginRepository): LoginUseCase {
+        return LoginUseCase(repository)
     }
 }
