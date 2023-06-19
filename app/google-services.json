@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "436415571593",
+    "project_id": "appplacely",
+    "storage_bucket": "appplacely.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436415571593:android:aa64f91cc7a8d4d7adc858",
+        "android_client_info": {
+          "package_name": "com.jd.appplacely"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClM66SJYHMb8mZMipkjd1yJT4qB5j4t2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436415571593:android:94244fbbb096ee5fadc858",
+        "android_client_info": {
+          "package_name": "com.jd.placely"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClM66SJYHMb8mZMipkjd1yJT4qB5j4t2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

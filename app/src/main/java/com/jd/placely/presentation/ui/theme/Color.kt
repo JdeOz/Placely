@@ -2,9 +2,10 @@ package com.jd.placely.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val primary = Color(0xFFFC4F4F)
+val secondary = Color(0xFFFEA5A5)
+val tertiary = Color(0xFFFED7D7)
+val onPrimary = Color(0xFFFFFBFC)
 
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
